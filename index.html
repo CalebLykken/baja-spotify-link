@@ -1,0 +1,35 @@
+<!doctype html>
+<!-- Spotify only returns a sign-in to https, so it comes here, and this hands
+     it to the truck at the address the truck put in `state`. It's published on
+     its own (see the README): the repo is private. The result is useless
+     without a secret that never leaves the Pi. Only private addresses are
+     followed, so this page can't be used to send anyone elsewhere. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Baja OS</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 18px/1.5 system-ui, sans-serif; margin: 0; padding: 32px 16px; text-align: center; }
+</style>
+</head>
+<body>
+<p id="note">Going back to the truck...</p>
+<script>
+const asked = new URLSearchParams(location.search);
+const [, ip, port] = (asked.get("state") || "").split("~");
+const isPrivate = /^(10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+)$/.test(ip || "");
+if (isPrivate && /^\d{2,5}$/.test(port || "")) {
+  const back = new URLSearchParams();
+  for (const key of ["code", "state", "error"])
+    if (asked.has(key)) back.set(key, asked.get(key));
+  location.replace(`http://${ip}:${port}/spotify/callback?${back}`);
+} else {
+  document.getElementById("note").textContent = "This link didn't come from your truck.";
+}
+</script>
+<noscript>This page needs JavaScript to get back to the truck.</noscript>
+</body>
+</html>

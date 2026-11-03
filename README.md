@@ -1,0 +1,1 @@
+The one page Spotify returns to after signing in on the phone. It passes the result to Baja OS on the local network. It sees no password, and what it passes on is useless without a secret kept on the truck.
